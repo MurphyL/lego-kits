@@ -7,7 +7,7 @@ import (
 )
 
 func TestRunJobNode(t *testing.T) {
-	RunJobNode(&JobNode[int, string]{
+	node := JobNode[int, string]{
 		Read: func(ch chan string, cnt int) {
 			for i := 0; i < cnt; i++ {
 				ch <- strconv.FormatInt(int64(i), 10)
@@ -19,5 +19,6 @@ func TestRunJobNode(t *testing.T) {
 				log.Println("write:", line)
 			}
 		},
-	}, 10000)
+	}
+	node.Run(10000)
 }
