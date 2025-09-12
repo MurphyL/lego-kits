@@ -17,6 +17,5 @@ type CompletionOptions struct {
 }
 
 func ApplyCompletion(text string, opts *CompletionOptions) CompletionResponse {
-	getRandomAigcAgent()
 	return nil
 }
