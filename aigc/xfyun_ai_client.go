@@ -1,17 +1,11 @@
 package aigc
 
-import (
-	"bytes"
-	"fmt"
-	"io"
-	"net/http"
-)
-
 type XfyunAiClient struct {
 	Model string
 	Token string
 }
 
+/**
 func (client XfyunAiClient) ApplyCompletion(text string, opts *CompletionOptions) CompletionResponse {
 	var baseURL string
 	switch client.Model {
@@ -43,3 +37,4 @@ func (x XfyunCompletionResponse) GetResult() string {
 	bytes, _ := io.ReadAll(x.resp.Body)
 	return string(bytes)
 }
+**/

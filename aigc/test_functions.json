@@ -1,0 +1,49 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "get_current_weather",
+      "description": "根据地理位置获取天气信息",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "城市的名称，如：中国武汉"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "celsius",
+              "fahrenheit"
+            ],
+            "description": "若当前地理位置在中国则使用摄氏温度单位，否则使用华氏温度单位"
+          }
+        },
+        "required": [
+          "location",
+          "unit"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "push_message_by_wecom_group_robot",
+      "description": "使用企业微信聊天群机器人推送通知消息",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "消息的内容，是根据上文整理出来的信息"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    }
+  }
+]

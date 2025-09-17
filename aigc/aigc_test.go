@@ -1,11 +1,6 @@
 package aigc
 
-import (
-	"log"
-	"os"
-	"testing"
-)
-
+/**
 func TestGetRandomAigcAgent(t *testing.T) {
 	token, ok := os.LookupEnv("XFYUN_AI_X1_TOKEN")
 	if !ok {
@@ -30,7 +25,7 @@ func TestGetRandomAigcAgent(t *testing.T) {
 		}
 	}
 }
-
+**/
 /**
 `虚构一个小说角色顾葳蕤，女性，需要补全角色的兴趣爱好，口头禅等信息，姓名符合个人特质，角色参考特质：活泼、敢爱敢恨、世家嫡女、不拘小节。
     请以JSON格式提供以下信息：
