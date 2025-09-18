@@ -1,6 +1,6 @@
 package rbac
 
-type Account interface {
+type LoginAccount interface {
 	Username()
 	Password()
 }
