@@ -1,40 +1,77 @@
 package aigc
 
-/**
-func TestGetRandomAigcAgent(t *testing.T) {
-	token, ok := os.LookupEnv("XFYUN_AI_X1_TOKEN")
-	if !ok {
-		log.Fatalln("请通过系统环境变量（XFYUN_AI_X1_TOKEN）配置讯飞云 AI 的 X1 模型的 Token")
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"testing"
+)
+
+func TestOllama(t *testing.T) {
+	agent := NewAgent(
+		WithServiceProvider("http://localhost:11434/api/chat", "qwen3:8b"),
+	)
+	functionsDictData, err := os.ReadFile("./test_functions.json")
+	if nil != err {
+		t.Error("读取自定义函数出错：", err.Error())
 	}
-	var agent OpenAiClient
-	for i := 0; i < 1; i++ {
-		agent = XfyunAiClient{Model: "x1", Token: token}
-		resp := agent.ApplyCompletion(`系统：提取事件信息。
-		用户：Alice和Bob将在周五参加科学展览会。
-		请以JSON格式提供以下信息，不要返回说明文字：
-
-		{
-			"name": "事件名称",
-			"date": "事件日期",
-			"participants": ["参与者列表"]
-		}
-
-		注：不要返回说明文字。`, &CompletionOptions{})
-		if resp.IsValid() {
-			t.Log(resp.GetResult())
-		}
+	var functions []map[string]any
+	json.Unmarshal(functionsDictData, &functions)
+	messages := []CompletionMessage{{Role: User, Content: "把武汉的天气发送到企微群里"}}
+	resp, err := agent.ApplyChatCompletion("qwen3:8b", messages)
+	if nil != err {
+		t.Error("调用 Ollama 失败", err.Error())
+	} else {
+		bytes, _ := io.ReadAll(resp.Body)
+		t.Log(string(bytes))
 	}
 }
-**/
-/**
-`虚构一个小说角色顾葳蕤，女性，需要补全角色的兴趣爱好，口头禅等信息，姓名符合个人特质，角色参考特质：活泼、敢爱敢恨、世家嫡女、不拘小节。
-    请以JSON格式提供以下信息：
-    {
-        "name": "角色姓名",
-        "gender": "角色性别",
-		"appearance": ["外貌描述"],
-		"clothing": ["衣着习惯"],
-        "lip-services": ["口头禅"],
-		"interests": ["兴趣"]
-    }`
-*/
+
+func TestOllamaV1(t *testing.T) {
+	agent := NewAgent(
+		WithServiceProvider("http://localhost:11434/api/chat", "qwen3:8b"),
+	)
+	functionsDictData, err := os.ReadFile("./test_functions.json")
+	if nil != err {
+		t.Error("读取自定义函数出错：", err.Error())
+	}
+	var functions []map[string]any
+	json.Unmarshal(functionsDictData, &functions)
+	messages := []CompletionMessage{{Role: User, Content: "整理2025年内的假日和补班日，以如下JSON结构返回数据：[{\"dt\":\"日期\", \"kind\":\"补板或休假\", \"reason\":\"假日名称或补办原因\"}]"}}
+	resp, err := agent.ApplyChatCompletion("qwen3:8b", messages)
+	if nil != err {
+		t.Error("调用 Ollama 失败", err.Error())
+	} else {
+		bytes, _ := io.ReadAll(resp.Body)
+		t.Log(string(bytes))
+	}
+}
+
+func TestXfyunX1(t *testing.T) {
+	token, ok := os.LookupEnv("XFYUNAI_X1_TOKEN")
+	agent := NewAgent(
+		WithServiceProvider("https://spark-api-open.xf-yun.com/v2/chat/completions", token),
+		WithCompletionRequestHook(func(request *http.Request) {
+			request.Header.Add("ContentItem-Type", "application/json")
+			request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+		}),
+	)
+	if !ok {
+		t.Error("未配置讯飞云 X1 的 Token")
+	}
+	messages := []CompletionMessage{{Role: User, Content: "武汉今天的天气怎么样？"}}
+	resp, err := agent.ApplyChatCompletion("x1", messages)
+	if nil != err {
+		t.Error("调用 Xfyun AI 失败", err.Error())
+	} else {
+		bytes, _ := io.ReadAll(resp.Body)
+		t.Log(string(bytes))
+	}
+}
+
+func TestName(t *testing.T) {
+	msg := CompletionRequest{ToolChoice: Auto}
+	t.Log(msg)
+}
