@@ -1,10 +1,32 @@
 package http
 
-import dgt "github.com/MurphyL/lego-kits/dgt"
+import (
+	"io"
+	"net/http"
+)
 
-type RequestAgent struct {
+type Request struct {
+	Method string
+	Url    string
+	Header http.Header
+	Body   io.Reader
 }
 
-func (a RequestAgent) Apply(action dgt.DataSourceAction) {
-	panic("implement me")
+func (r Request) Exec() (string, error) {
+	var err error
+	var ret string
+	httpRequest, err := http.NewRequest(r.Method, r.Url, r.Body)
+	if err == nil {
+		if nil != r.Header {
+			httpRequest.Header = r.Header
+		}
+		resp, err := http.DefaultClient.Do(httpRequest)
+		if nil == err {
+			data, err := io.ReadAll(resp.Body)
+			if err == nil {
+				ret = string(data)
+			}
+		}
+	}
+	return ret, err
 }

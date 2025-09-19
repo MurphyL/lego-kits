@@ -2,8 +2,6 @@ package aigc
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"testing"
@@ -24,7 +22,7 @@ func TestOllama(t *testing.T) {
 	if nil != err {
 		t.Error("调用 Ollama 失败", err.Error())
 	} else {
-		bytes, _ := io.ReadAll(resp.Body)
+		bytes, _ := json.Marshal(resp)
 		t.Log(string(bytes))
 	}
 }
@@ -44,29 +42,29 @@ func TestOllamaV1(t *testing.T) {
 	if nil != err {
 		t.Error("调用 Ollama 失败", err.Error())
 	} else {
-		bytes, _ := io.ReadAll(resp.Body)
+		bytes, _ := json.Marshal(resp)
 		t.Log(string(bytes))
 	}
 }
 
 func TestXfyunX1(t *testing.T) {
-	token, ok := os.LookupEnv("XFYUNAI_X1_TOKEN")
+	token, ok := os.LookupEnv("XFYUN_AI_X1_TOKEN")
+	if !ok {
+		t.Error("未配置讯飞云 X1 的 Token")
+		return
+	}
 	agent := NewAgent(
 		WithServiceProvider("https://spark-api-open.xf-yun.com/v2/chat/completions", token),
 		WithCompletionRequestHook(func(request *http.Request) {
-			request.Header.Add("ContentItem-Type", "application/json")
-			request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+			request.Header.Add("Content-Type", "application/json")
 		}),
 	)
-	if !ok {
-		t.Error("未配置讯飞云 X1 的 Token")
-	}
 	messages := []CompletionMessage{{Role: User, Content: "武汉今天的天气怎么样？"}}
 	resp, err := agent.ApplyChatCompletion("x1", messages)
 	if nil != err {
 		t.Error("调用 Xfyun AI 失败", err.Error())
 	} else {
-		bytes, _ := io.ReadAll(resp.Body)
+		bytes, _ := json.Marshal(resp)
 		t.Log(string(bytes))
 	}
 }

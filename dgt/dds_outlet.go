@@ -1,22 +1,22 @@
 package dgt
 
+import (
+	"errors"
+)
+
 /* Dynamic Get Toolkit - 动态数据源 */
 
-type DataSourceType string
+type Request interface {
+	Exec() (string, error)
+}
 
-type DataSourceAction string
-
-const (
-	RDBMS  DataSourceType = "rdbms"
-	JSONL  DataSourceType = "jsonl"
-	NDJSON DataSourceType = "ndjson"
-	HTTP   DataSourceType = "http"
-)
-
-const (
-	GET DataSourceAction = "get"
-)
-
-type DDS interface {
-	Apply(action DataSourceAction)
+func Apply(request Request) (string, error) {
+	var err error
+	var ret string
+	if nil == request {
+		err = errors.New("请求参数为空")
+	} else {
+		ret, err = request.Exec()
+	}
+	return ret, err
 }
