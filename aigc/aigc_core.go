@@ -32,7 +32,7 @@ type AgentOption func(*AgentOptions)
 
 func (c Agent) ApplyChatCompletion(model string, messages []CompletionMessage) (*CompletionResponse, error) {
 	var err error
-	var request = CompletionRequest{Model: model, Messages: messages, ToolChoice: None}
+	var request = CompletionRequest{Model: model, Messages: messages, ToolChoice: ToolChoiceModeNone}
 	var response = new(CompletionResponse)
 	// HTTP 请求
 	httpRequest, err := request.MakeHttpMessage("POST", c.opts.ServiceUrl)

@@ -9,17 +9,17 @@ import (
 type ToolChoiceMode string
 
 const (
-	Auto     ToolChoiceMode = "auto"
-	None     ToolChoiceMode = "none"
-	Required ToolChoiceMode = "required"
+	ToolChoiceModeAuto     ToolChoiceMode = "auto"
+	ToolChoiceModeNone     ToolChoiceMode = "none"
+	ToolChoiceModeRequired ToolChoiceMode = "required"
 )
 
 type MessageRole string
 
 const (
-	User      MessageRole = "user"      // Request
-	System    MessageRole = "system"    // Request
-	Assistant MessageRole = "assistant" // Response
+	MessageRoleUser      MessageRole = "user"      // Request
+	MessageRoleSystem    MessageRole = "system"    // Request
+	MessageRoleAssistant MessageRole = "assistant" // Response
 )
 
 type CompletionMessage struct {

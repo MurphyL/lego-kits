@@ -9,7 +9,7 @@ import (
 
 func TestOllama(t *testing.T) {
 	agent := NewAgent(
-		WithServiceProvider("http://localhost:11434/api/chat", "qwen3:8b"),
+		ServiceProvider("http://localhost:11434/api/chat", "qwen3:8b"),
 	)
 	functionsDictData, err := os.ReadFile("./test_functions.json")
 	if nil != err {
@@ -17,7 +17,7 @@ func TestOllama(t *testing.T) {
 	}
 	var functions []map[string]any
 	json.Unmarshal(functionsDictData, &functions)
-	messages := []CompletionMessage{{Role: User, Content: "把武汉的天气发送到企微群里"}}
+	messages := []CompletionMessage{{Role: MessageRoleUser, Content: "把武汉的天气发送到企微群里"}}
 	resp, err := agent.ApplyChatCompletion("qwen3:8b", messages)
 	if nil != err {
 		t.Error("调用 Ollama 失败", err.Error())
@@ -29,7 +29,7 @@ func TestOllama(t *testing.T) {
 
 func TestOllamaV1(t *testing.T) {
 	agent := NewAgent(
-		WithServiceProvider("http://localhost:11434/api/chat", "qwen3:8b"),
+		ServiceProvider("http://localhost:11434/api/chat", "qwen3:8b"),
 	)
 	functionsDictData, err := os.ReadFile("./test_functions.json")
 	if nil != err {
@@ -37,7 +37,7 @@ func TestOllamaV1(t *testing.T) {
 	}
 	var functions []map[string]any
 	json.Unmarshal(functionsDictData, &functions)
-	messages := []CompletionMessage{{Role: User, Content: "整理2025年内的假日和补班日，以如下JSON结构返回数据：[{\"dt\":\"日期\", \"kind\":\"补板或休假\", \"reason\":\"假日名称或补办原因\"}]"}}
+	messages := []CompletionMessage{{Role: MessageRoleUser, Content: "整理2025年内的假日和补班日，以如下JSON结构返回数据：[{\"dt\":\"日期\", \"kind\":\"补板或休假\", \"reason\":\"假日名称或补办原因\"}]"}}
 	resp, err := agent.ApplyChatCompletion("qwen3:8b", messages)
 	if nil != err {
 		t.Error("调用 Ollama 失败", err.Error())
@@ -54,12 +54,12 @@ func TestXfyunX1(t *testing.T) {
 		return
 	}
 	agent := NewAgent(
-		WithServiceProvider("https://spark-api-open.xf-yun.com/v2/chat/completions", token),
-		WithCompletionRequestHook(func(request *http.Request) {
+		ServiceProvider("https://spark-api-open.xf-yun.com/v2/chat/completions", token),
+		CompletionRequestHook(func(request *http.Request) {
 			request.Header.Add("Content-Type", "application/json")
 		}),
 	)
-	messages := []CompletionMessage{{Role: User, Content: "武汉今天的天气怎么样？"}}
+	messages := []CompletionMessage{{Role: MessageRoleUser, Content: "武汉今天的天气怎么样？"}}
 	resp, err := agent.ApplyChatCompletion("x1", messages)
 	if nil != err {
 		t.Error("调用 Xfyun AI 失败", err.Error())
@@ -70,6 +70,6 @@ func TestXfyunX1(t *testing.T) {
 }
 
 func TestName(t *testing.T) {
-	msg := CompletionRequest{ToolChoice: Auto}
+	msg := CompletionRequest{ToolChoice: ToolChoiceModeAuto}
 	t.Log(msg)
 }
