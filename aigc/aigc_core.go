@@ -1,7 +1,6 @@
 package aigc
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -30,10 +29,10 @@ type AgentOption func(*AgentOptions)
 
 /** OpenAI API - Chat Completions 格式详解 - https://zhuanlan.zhihu.com/p/692336625 */
 
-func (c Agent) ApplyChatCompletion(model string, messages []CompletionMessage) (*CompletionResponse, error) {
+func (c Agent) ApplyChatCompletion(model string, messages []CompletionMessage) (string, error) {
 	var err error
+	var response string
 	var request = CompletionRequest{Model: model, Messages: messages, ToolChoice: ToolChoiceModeNone}
-	var response = new(CompletionResponse)
 	// HTTP 请求
 	httpRequest, err := request.MakeHttpMessage("POST", c.opts.ServiceUrl)
 	if err == nil {
@@ -46,7 +45,7 @@ func (c Agent) ApplyChatCompletion(model string, messages []CompletionMessage) (
 		if err == nil {
 			data, err := io.ReadAll(httpResponse.Body)
 			if err == nil {
-				json.Unmarshal(data, response)
+				response = string(data)
 			}
 		}
 	}

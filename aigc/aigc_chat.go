@@ -39,22 +39,3 @@ func (request CompletionRequest) MakeHttpMessage(method, url string) (*http.Requ
 	body, _ := json.Marshal(request)
 	return http.NewRequest(method, url, bytes.NewReader(body))
 }
-
-type CompletionResponse struct {
-	Code    uint8  `json:"code"`
-	Message string `json:"message"`
-	Sid     string `json:"sid"`
-	Status  string `json:"status"`
-	Choices []struct {
-		Index   uint16 `json:"index"`
-		Message struct {
-			CompletionMessage
-			Reason string `json:"reasoning_content"`
-		} `json:"message"`
-	} `json:"choices"`
-	Usage struct {
-		CompletionTokens uint16 `json:"completion_tokens"`
-		PromptTokens     uint16 `json:"prompt_tokens"`
-		TotalTokens      uint16 `json:"total_tokens"`
-	} `json:"usage"`
-}
