@@ -1,4 +1,4 @@
-package auth
+package authentication
 
 /**
 3. 权限模型
