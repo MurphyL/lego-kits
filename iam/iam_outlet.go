@@ -35,5 +35,32 @@ const (
 	RAM IntegrateMode = "ram"
 )
 
-type Application interface {
+type OrgElement struct {
+	Id    int64
+	Name  string
+	Intro string
 }
+
+type Enterprise struct {
+	OrgElement
+	ParentId              int64
+	UnifiedSocialCreditId string // 统一社会信用代码（Unified Social Credit Identifier）
+	LegalPersonName       string // 公司法人姓名
+	RegisteredAddress     string // 公司注册地址
+	TermOfOperation       string // 营业期限
+	ContactPersonId       int64  // 联系人 Id
+}
+
+type Department struct {
+	OrgElement
+	ParentId       int64
+	LeaderPersonId int64 // 负责人 Id
+}
+
+type PersonInfo struct {
+	OrgElement
+	Birthday      string // 生日
+	PhoneOrMobile string // 手机或电话
+}
+
+// Identity Provider
