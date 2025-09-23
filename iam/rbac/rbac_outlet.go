@@ -3,48 +3,27 @@ package rbac
 type ResourceScope string
 
 const (
-	Global  = "global"
-	Org     = "org"
-	OrgUser = "org_user"
-	OrgRole = "org_role"
-	OrgDept = "org_dept"
-	OrgTag  = "org_tag"
+	Global = "global"
 )
 
-type Agent[K any] interface {
-	GetRoleById(K) *Role
-	GetUserById(K) *User
-
-	BindRolePerm(*Role, *Perm)
-	BindRoleUser(*Role, *User)
-
-	GetUsersByRoleId(K) []*User
-	GetPermsByRoleId(K) []*Perm
-}
-
 type Role struct {
-	Scope string
+	Scope ResourceScope
 	Name  string
 }
 
 type User struct {
-	Name string
+	Scope ResourceScope
+	Name  string
 }
 
 type Perm struct {
-	Name string
+	Scope ResourceScope
+	Name  string
 }
 
-type Vars map[string]string
+type GetById[K any, R Role | User | Perm] func(K) *R
 
-type Tag struct {
-	Vars
-	Name string
-}
-
-func (t Tag) Extra(key, value string) {
-	if nil == t.Vars {
-		t.Vars = make(Vars)
-	}
-	t.Vars[key] = value
+type Agent[K any] struct {
+	GetRoleById GetById[K, Role]
+	GetUserById GetById[K, User]
 }

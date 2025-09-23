@@ -57,10 +57,6 @@ type Department struct {
 	LeaderPersonId int64 // 负责人 Id
 }
 
-type PersonInfo struct {
-	OrgElement
-	Birthday      string // 生日
-	PhoneOrMobile string // 手机或电话
+type ServiceProvider interface {
+	SetupApp()
 }
-
-// Identity Provider
