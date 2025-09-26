@@ -7,5 +7,12 @@ type DataSource interface {
 }
 
 type Request interface {
-	Apply() (string, error)
+	Apply() (Response, error)
+}
+
+type Response interface {
+	Success() bool
+	Attrs() map[string]string
+	Attr(string) string
+	Body() string
 }

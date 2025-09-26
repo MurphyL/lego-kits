@@ -1,13 +1,14 @@
 package rest
 
 import (
-	"encoding/json"
 	"testing"
 )
 
 func TestHttpRequest(t *testing.T) {
-	client := NewRestDataSource("https://www.baidu.com")
-	schema, _ := json.Marshal(RequestSchema{})
-	request, _ := client.NewRequest(string(schema))
-	t.Log(request)
+	ds := DataSource{}
+	request, _ := ds.NewRequest(RequestSchema{Url: "https://baidu.com"})
+	ret, err := request.Apply()
+	if err == nil && ret.Success() {
+		t.Log(ret.Attrs())
+	}
 }

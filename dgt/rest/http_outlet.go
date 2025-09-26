@@ -1,59 +1,61 @@
 package rest
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
+
+	"github.com/MurphyL/lego-kits/dgt"
 )
 
-func NewRestDataSource(baseUrl string) *DataSource {
-	return &DataSource{baseUrl}
-}
-
 type DataSource struct {
-	BaseUrl string
 }
 
 type RequestWrapper struct {
-	ref *http.Request
+	*http.Request
 }
 
 type ResponseWrapper struct {
-	Status string // e.g. "200 OK"
-	Header http.Header
+	*http.Response
+}
+
+type RequestSchema struct {
+	Method string
+	Url    string
 	Body   string
 }
 
-func (ds DataSource) NewRequest(schema string) (*RequestWrapper, error) {
-	request := new(struct {
-		Method string
-		Url    string
-		Body   string
-	})
-	json.Unmarshal([]byte(schema), request)
-	httpRequest, err := http.NewRequest(request.Method, request.Url, nil)
-	if err == nil {
-		return &RequestWrapper{ref: httpRequest}, nil
-	} else {
-		return nil, err
-	}
+func (ds DataSource) NewRequest(request RequestSchema) (*RequestWrapper, error) {
+	req, err := http.NewRequest(
+		request.Method,
+		request.Url,
+		strings.NewReader(request.Body),
+	)
+	return &RequestWrapper{Request: req}, err
 }
 
-func (r RequestWrapper) Apply() (string, error) {
-	resp, err := http.DefaultClient.Do(r.ref)
-	if err == nil {
-		data, _ := json.Marshal(wrapHttpResponse(resp))
-		return string(data), nil
-	} else {
-		return "", err
-	}
+func (r RequestWrapper) Apply() (dgt.Response, error) {
+	resp, err := http.DefaultClient.Do(r.Request)
+	return ResponseWrapper{Response: resp}, err
 }
 
-func wrapHttpResponse(resp *http.Response) *ResponseWrapper {
-	body, _ := io.ReadAll(resp.Body)
-	return &ResponseWrapper{
-		Status: resp.Status,
-		Header: resp.Header,
-		Body:   string(body),
+func (resp ResponseWrapper) Success() bool {
+	return resp.StatusCode == 200
+}
+
+func (resp ResponseWrapper) Attrs() map[string]string {
+	vars := make(map[string]string)
+	for k := range resp.Header {
+		vars[k] = strings.Join(resp.Header.Values(k), ",")
 	}
+	return vars
+}
+
+func (resp ResponseWrapper) Attr(key string) string {
+	return resp.Header.Get(key)
+}
+
+func (resp ResponseWrapper) Body() string {
+	data, _ := io.ReadAll(resp.Response.Body)
+	return string(data)
 }
