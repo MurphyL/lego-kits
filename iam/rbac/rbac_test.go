@@ -1,13 +1,18 @@
 package rbac
 
 import (
-	"encoding/json"
 	"testing"
 )
 
 func TestName(t *testing.T) {
-	tag := Tag{Name: "测试"}
-	tag.Extra("hello", "value")
-	data, _ := json.Marshal(tag)
-	t.Log(string(data))
+	agent := Agent[int64]{
+		GetRoleById: func(i int64) *Role {
+			return &Role{Name: "测试角色"}
+		},
+		GetUserById: func(i int64) *User {
+			return &User{Name: "测试用户"}
+		},
+	}
+	v := agent.GetUserById(1)
+	t.Log(v)
 }
