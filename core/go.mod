@@ -1,4 +1,4 @@
-module core
+module github.com/MurphyL/lego-kits/core
 
 go 1.24.0
 
