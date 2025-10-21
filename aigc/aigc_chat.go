@@ -1,11 +1,5 @@
 package aigc
 
-import (
-	"bytes"
-	"encoding/json"
-	"net/http"
-)
-
 type ToolChoiceMode string
 
 const (
@@ -14,17 +8,9 @@ const (
 	ToolChoiceModeRequired ToolChoiceMode = "required"
 )
 
-type MessageRole string
-
-const (
-	MessageRoleUser      MessageRole = "user"      // Request
-	MessageRoleSystem    MessageRole = "system"    // Request
-	MessageRoleAssistant MessageRole = "assistant" // Response
-)
-
 type CompletionMessage struct {
-	Role    MessageRole `json:"role"`
-	Content string      `json:"content"`
+	Role    string `json:"role"`
+	Content string `json:"content"`
 }
 
 type CompletionRequest struct {
@@ -35,7 +21,37 @@ type CompletionRequest struct {
 	Tools      []map[string]any    `json:"tools,omitempty"`
 }
 
-func (request CompletionRequest) MakeHttpMessage(method, url string) (*http.Request, error) {
-	body, _ := json.Marshal(request)
-	return http.NewRequest(method, url, bytes.NewReader(body))
+type CompletionRequestOption func(*CompletionRequest)
+
+func NewCompletionMessage(role string, content string) CompletionMessage {
+	return CompletionMessage{Role: role, Content: content}
+}
+
+func NewCompletionTool(kind string, body map[string]any) map[string]any {
+	return map[string]any{"type": kind, kind: body}
+}
+
+func WithUserMessage(content string) CompletionRequestOption {
+	return func(request *CompletionRequest) {
+		request.Messages = append(request.Messages, NewCompletionMessage("user", content))
+	}
+}
+
+func WithSystemMessage(content string) CompletionRequestOption {
+	return func(request *CompletionRequest) {
+		request.Messages = append(request.Messages, NewCompletionMessage("system", content))
+	}
+}
+
+func WithAssistantMessage(content string) CompletionRequestOption {
+	return func(request *CompletionRequest) {
+		request.Messages = append(request.Messages, NewCompletionMessage("assistant", content))
+	}
+}
+
+func WithFunction(name, desc string, params map[string]any) CompletionRequestOption {
+	return func(request *CompletionRequest) {
+		functionBody := map[string]any{"name": name, "description": desc, "parameters": params}
+		request.Tools = append(request.Tools, NewCompletionTool("function", functionBody))
+	}
 }
