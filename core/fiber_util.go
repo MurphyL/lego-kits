@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
 	"gorm.io/gorm"
 )
 
@@ -48,12 +49,19 @@ type QueryResult[T Model, Q any] struct {
 }
 
 func NewFiberApp(prefork bool) *fiber.App {
-	return fiber.New(fiber.Config{
+	fiberApp := fiber.New(fiber.Config{
+		Immutable:             true,
 		DisableStartupMessage: true,
 		Prefork:               prefork,
-		ServerHeader:          "yanying-x v1.0.1",
+		AppName:               "lego-kits",
+		ServerHeader:          "lego-core v1.0.1",
 		ErrorHandler:          DefaultErrorHandler,
 	})
+	// 添加压缩插件
+	fiberApp.Use(compress.New(compress.Config{
+		Level: compress.LevelBestSpeed, // 或使用 compress.LevelZstd
+	}))
+	return fiberApp
 }
 
 func NewActionResult(action ActionEnum, payload any, errs ...error) *ActionResult {
