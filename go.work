@@ -1,11 +1,8 @@
 go 1.24.4
 
 use (
-    ./aigc
-    ./dgt
-    ./etl
-    ./iam
-    ./lunar
-    ./vfs
-    ./workday
+    core
+    aigc
+    etl
+    iam
 )
