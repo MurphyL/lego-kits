@@ -22,8 +22,8 @@ type CompletionResponse struct {
 }
 
 type CompletionUsage struct {
-	CompletionTokens uint64 // 模型生成的新token数，
-	PromptTokens     uint64 // 用户输入的prompt的token数，
+	CompletionTokens uint64 // 模型生成的新token数
+	PromptTokens     uint64 // 用户输入的prompt的token数
 	TotalTokens      uint64 // 对话的总token数，prompt_tokens + completionTokens
 }
 
@@ -32,10 +32,7 @@ func (r CompletionResponse) Ok() bool {
 	return r.httpResponse.StatusCode == 200
 }
 
-// Usage 完成请求的使用统计信息：
-// completion_tokens，模型生成的新token数，
-// prompt_tokens，用户输入的prompt的token数，
-// total_tokens，对话的总token数，prompt_tokens + completion_tokens
+// Usage 完成请求的使用统计信息
 func (r CompletionResponse) Usage() *CompletionUsage {
 	return &CompletionUsage{}
 }
@@ -43,7 +40,7 @@ func (r CompletionResponse) Usage() *CompletionUsage {
 // ResolveTokens 流式返回时，token会作为的SSE(server-sent events)事件返回。http的chunk流由 data: [DONE]标记消息终止。
 func (r CompletionResponse) ResolveTokens() {
 	if nil != r.resolveTokens {
-		r.resolveTokens(r.httpResponse)
+		r.resolveTokens("")
 	} else {
 		log.Println(r.httpResponse)
 	}
@@ -51,7 +48,7 @@ func (r CompletionResponse) ResolveTokens() {
 
 func (r CompletionResponse) ResolveMessages() {
 	if nil != r.resolveTokens {
-		r.resolveMessages(r.httpResponse)
+		r.resolveMessages("")
 	} else {
 		log.Println(r.httpResponse)
 	}
@@ -59,14 +56,8 @@ func (r CompletionResponse) ResolveMessages() {
 
 func (r CompletionResponse) ResolveTools() {
 	if nil != r.resolveTokens {
-		r.resolveTools(r.httpResponse)
+		r.resolveTools("")
 	} else {
 		log.Println(r.httpResponse)
-	}
-}
-
-func WithUsageResolver(resolver func(string) *CompletionUsage) func(*AgentOptions) {
-	return func(options *AgentOptions) {
-		options.resolveUsage = resolver
 	}
 }

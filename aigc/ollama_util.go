@@ -1,7 +1,11 @@
 package aigc
 
 func NewOllamaAgent(url string, withOptions ...func(*AgentOptions)) Agent {
-	options := &AgentOptions{}
+	options := &AgentOptions{
+		resolveUsage: func(s string) *CompletionUsage {
+			return nil
+		},
+	}
 	for _, withOption := range withOptions {
 		withOption(options)
 	}
