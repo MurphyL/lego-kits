@@ -1,27 +1,29 @@
-package core
+package repo
 
 import (
 	"fmt"
 
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 )
 
-type GormConfig struct{ Driver, Dsn string }
+type Model interface {
+}
 
-func ConnectGorm(opts *GormConfig) (*gorm.DB, error) {
-	var conn gorm.Dialector
-	switch opts.Driver {
-	default:
-		conn = sqlite.Open(opts.Dsn)
-	}
-	return gorm.Open(conn, &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "t_", // 表名前缀
-			SingularTable: true, // 使用单数表名
-		},
-	})
+type QueryResult[T Model, Q any] struct {
+	Params  Q
+	Total   int64
+	Records []T
+}
+
+type PageQuery struct {
+	PageNum  int
+	PageSize int
+}
+
+type SkipQuery struct {
+	Key   string
+	Value string
+	Count int
 }
 
 func NewPageQuery[T Model](db *gorm.DB, query *PageQuery, model *T) (*gorm.DB, int64) {

@@ -9,7 +9,13 @@ const (
 	ToolChoiceModeRequired ToolChoiceMode = "required"
 )
 
-func WithFunction(name, desc string, params map[string]any) func(*ChatCompletion) {
+func WithTools() func(*ChatCompletion) {
+	return func(request *ChatCompletion) {
+
+	}
+}
+
+func WithToolFunction(name, desc string, params map[string]any) func(*ChatCompletion) {
 	return func(request *ChatCompletion) {
 		functionBody := map[string]any{"name": name, "description": desc, "parameters": params}
 		request.Tools = append(request.Tools, map[string]any{"type": "function", "function": functionBody})

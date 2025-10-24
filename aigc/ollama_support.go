@@ -1,17 +1,32 @@
 package aigc
 
-func NewOllamaAgent(url string, withOptions ...func(*AgentOptions)) Agent {
+import (
+	"github.com/buger/jsonparser"
+)
+
+func NewOllamaAgent(url string, withOptions ...func(resolvers *AgentOptions)) OllamaAgent {
 	options := &AgentOptions{
-		resolveUsage: func(s string) *CompletionUsage {
-			return nil
-		},
+		resolveUsage: resolveOllamaAgentUsage,
 	}
 	for _, withOption := range withOptions {
 		withOption(options)
 	}
-	return &ollamaAgent{internalAgent: internalAgent{Url: url, AgentOptions: options}}
+	agent := OllamaAgent{
+		internalAgent{Url: url, AgentOptions: options},
+	}
+	return agent
 }
 
-type ollamaAgent struct {
+type OllamaAgent struct {
 	internalAgent
+}
+
+func resolveOllamaAgentUsage(d []byte) *CompletionUsage {
+	ctn, _ := jsonparser.GetInt(d, "eval_count")
+	ptn, _ := jsonparser.GetInt(d, "prompt_eval_count")
+	return &CompletionUsage{
+		CompletionTokens: uint64(ctn),
+		PromptTokens:     uint64(ptn),
+		TotalTokens:      uint64(ctn + ptn),
+	}
 }

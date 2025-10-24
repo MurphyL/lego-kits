@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -13,10 +14,7 @@ type Agent interface {
 }
 
 type AgentOptions struct {
-	resolveTokens   func(string)
-	resolveMessages func(string)
-	resolveTools    func(string)
-	resolveUsage    func(string) *CompletionUsage
+	resolveUsage func(d []byte) *CompletionUsage
 }
 
 type internalAgent struct {
@@ -26,19 +24,21 @@ type internalAgent struct {
 }
 
 func (c internalAgent) ApplyCompletion(model string, withOptions ...func(*ChatCompletion)) (*CompletionResponse, error) {
-	var chatCompletion = ChatCompletion{Model: model}
+	var completion = ChatCompletion{Model: model}
 	for _, withOption := range withOptions {
-		withOption(&chatCompletion)
+		withOption(&completion)
 	}
-	var body, _ = json.Marshal(chatCompletion)
+	var body, _ = json.Marshal(completion)
 	if httpRequest, err := http.NewRequest("POST", c.Url, bytes.NewReader(body)); err == nil {
 		httpRequest.Header.Add("Content-Type", "application/json")
 		httpRequest.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.Token))
 		if httpResponse, re := http.DefaultClient.Do(httpRequest); re == nil {
+			data, _ := io.ReadAll(httpResponse.Body)
 			return &CompletionResponse{
-				Stream:       chatCompletion.Stream,
-				httpResponse: httpResponse,
 				AgentOptions: c.AgentOptions,
+				StatusCode:   httpResponse.StatusCode,
+				Stream:       completion.Stream,
+				Payload:      data,
 			}, nil
 		} else {
 			return nil, fmt.Errorf("执行HTTP请求出错：%s", re.Error())

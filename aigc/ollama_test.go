@@ -15,10 +15,11 @@ func TestOllama(t *testing.T) {
 	var functions []map[string]any
 	json.Unmarshal(functionsDictData, &functions)
 	resp, err := agent.ApplyCompletion("qwen3:8b", WithUserMessage("把武汉的天气发送到企微群里"))
-	if nil != err {
-		t.Error("调用 Ollama 失败", err.Error())
+	if nil == err {
+		usage := resp.Usage()
+		t.Log(usage)
 	} else {
-		resp.ResolveMessages()
+		t.Error("调用 Ollama 失败", err.Error())
 	}
 }
 

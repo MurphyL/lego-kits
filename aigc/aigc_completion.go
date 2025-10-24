@@ -2,7 +2,6 @@ package aigc
 
 import (
 	"log"
-	"net/http"
 )
 
 /** OpenAI API - Chat Completions 格式详解 - https://zhuanlan.zhihu.com/p/692336625 */
@@ -17,8 +16,9 @@ type ChatCompletion struct {
 
 type CompletionResponse struct {
 	*AgentOptions
-	Stream       bool
-	httpResponse *http.Response
+	StatusCode int
+	Stream     bool
+	Payload    []byte
 }
 
 type CompletionUsage struct {
@@ -29,35 +29,38 @@ type CompletionUsage struct {
 
 // Ok HTTP 请求是否执行成功
 func (r CompletionResponse) Ok() bool {
-	return r.httpResponse.StatusCode == 200
+	return r.StatusCode == 200
 }
 
 // Usage 完成请求的使用统计信息
 func (r CompletionResponse) Usage() *CompletionUsage {
-	return &CompletionUsage{}
+	usage := &CompletionUsage{}
+	if r.Ok() && nil != r.AgentOptions.resolveUsage {
+		return r.resolveUsage(r.Payload)
+	} else {
+		log.Println("ResolveTokens:", r.Payload)
+	}
+	return usage
 }
 
 // ResolveTokens 流式返回时，token会作为的SSE(server-sent events)事件返回。http的chunk流由 data: [DONE]标记消息终止。
 func (r CompletionResponse) ResolveTokens() {
-	if nil != r.resolveTokens {
-		r.resolveTokens("")
+	if r.Ok() && nil != r.AgentOptions.resolveUsage {
 	} else {
-		log.Println(r.httpResponse)
+		log.Println("ResolveTokens:", r.Payload)
 	}
 }
 
 func (r CompletionResponse) ResolveMessages() {
-	if nil != r.resolveTokens {
-		r.resolveMessages("")
+	if r.Ok() && nil != r.AgentOptions.resolveUsage {
 	} else {
-		log.Println(r.httpResponse)
+		log.Println("ResolveMessages:", r.Payload)
 	}
 }
 
 func (r CompletionResponse) ResolveTools() {
-	if nil != r.resolveTokens {
-		r.resolveTools("")
+	if r.Ok() && nil != r.AgentOptions.resolveUsage {
 	} else {
-		log.Println(r.httpResponse)
+		log.Println("ResolveTools", r.Payload)
 	}
 }

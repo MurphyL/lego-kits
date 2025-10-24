@@ -5,7 +5,6 @@ go 1.24.0
 toolchain go1.24.6
 
 require (
-	github.com/MurphyL/lego-kits/core v0.0.4
 	github.com/gofiber/fiber/v2 v2.52.9
 	gorm.io/gorm v1.31.0
 )
