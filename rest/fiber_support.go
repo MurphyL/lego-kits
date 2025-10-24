@@ -1,4 +1,4 @@
-package core
+package main
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/MurphyL/lego-kits/core"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"gorm.io/gorm"
 )
@@ -82,19 +82,6 @@ func DefaultErrorHandler(c *fiber.Ctx, err error) error {
 	return c.Status(code).SendString(err.Error())
 }
 
-func NewPageQuery[T Model](db *gorm.DB, query *PageQuery, model *T) (*gorm.DB, int64) {
-	var total int64
-	db.Model(model).Count(&total)
-	offset := (query.PageNum - 1) * query.PageSize
-	return db.Offset(offset).Limit(query.PageSize), total
-}
-
-func NewSkipQuery[T Model](db *gorm.DB, query *SkipQuery, model *T) (*gorm.DB, int64) {
-	var total int64
-	db.Model(model).Count(&total)
-	return db.Where(fmt.Sprintf("%s > ?", query.Key), query.Value).Limit(query.Count), total
-}
-
 func DumpHandler(c *fiber.Ctx) error {
 	buf := make([]byte, 1<<20) // 1MB buffer
 	n := runtime.Stack(buf, true)
@@ -115,7 +102,7 @@ func HandleModelRequests[R Model](db *gorm.DB) fiber.Handler {
 					PageNum:  ctx.QueryInt("pageNum", 1),
 					PageSize: ctx.QueryInt("pageSize", 10),
 				}
-				tx, cnt := NewPageQuery(db, &pageInfo, new(R))
+				tx, cnt := core.NewPageQuery(db, &pageInfo, new(R))
 				records := make([]R, 0)
 				if err = tx.Find(&records).Error; err == nil {
 					return ctx.JSON(QueryResult[R, PageQuery]{Params: pageInfo, Total: cnt, Records: records})
@@ -126,7 +113,7 @@ func HandleModelRequests[R Model](db *gorm.DB) fiber.Handler {
 					Value: ctx.Query("value"),
 					Count: ctx.QueryInt("count", 10),
 				}
-				tx, cnt := NewSkipQuery(db, &skipVars, new(R))
+				tx, cnt := core.NewSkipQuery(db, &skipVars, new(R))
 				records := make([]R, 0)
 				if err = tx.Find(&records).Error; err == nil {
 					return ctx.JSON(QueryResult[R, SkipQuery]{Params: skipVars, Total: cnt, Records: records})

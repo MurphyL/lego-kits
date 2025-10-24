@@ -1,12 +1,12 @@
-module github.com/MurphyL/lego-kits/core
+module rest
 
 go 1.24.0
 
 toolchain go1.24.6
 
 require (
+	github.com/MurphyL/lego-kits/core v0.0.4
 	github.com/gofiber/fiber/v2 v2.52.9
-	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.31.0
 )
 
@@ -22,7 +22,9 @@ require (
 	github.com/mattn/go-runewidth v0.0.19 // indirect
 	github.com/mattn/go-sqlite3 v1.14.32 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.67.0 // indirect
+	github.com/valyala/fasthttp v1.68.0 // indirect
+	github.com/yuin/gopher-lua v1.1.1 // indirect
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
+	gorm.io/driver/sqlite v1.6.0 // indirect
 )
