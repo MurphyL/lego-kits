@@ -2,10 +2,9 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
-	"reflect"
 	"strings"
 )
 
@@ -31,19 +30,12 @@ type filesystemStore struct {
 }
 
 type filesystemCollection struct {
-	collName    string
-	storeRoot   *os.Root
-	elementType reflect.Type
+	collName  string
+	storeRoot *os.Root
 }
 
-func (c filesystemCollection) AddDocument(v any) bool {
-	if fh, err := c.storeRoot.OpenFile(c.collName, os.O_WRONLY, 0644); err == nil {
-		if data, em := json.Marshal(v); em == nil {
-			_, ew := fh.Write(fmt.Appendln(data))
-			return ew == nil
-		}
-	}
-	return false
+func (c filesystemCollection) Iterator() *CollectionIterator {
+	return &CollectionIterator{}
 }
 
 type WithFilesystemStoreOption func(*filesystemStore)
@@ -52,30 +44,9 @@ func (s filesystemStore) createCollectionName(name string) string {
 	return strings.Join([]string{name, s.fileSuffix}, ".")
 }
 
-func (s filesystemStore) CreateCollection(name string, v any) (Collection, error) {
+func (s filesystemStore) CreateCollection(name string) (Collection, error) {
 	if len(name) == 0 {
 		return nil, fmt.Errorf("集合名称不能为空")
-	}
-	var valueType reflect.Type
-	var fields []string
-	if nil == v {
-		return nil, fmt.Errorf("数值对象不能为空")
-	}
-	if vt := reflect.TypeOf(v); vt.Kind() == reflect.Ptr {
-		valueType = reflect.TypeOf(v).Elem()
-
-	} else {
-		valueType = reflect.TypeOf(v)
-	}
-	for i := 0; i < valueType.NumField(); i++ {
-		structField := valueType.Field(i)
-		structTag := structField.Tag.Get("lego")
-		if len(structTag) > 0 {
-			tags := strings.Split(structTag, ",")[:]
-			fields = append(fields, tags[0])
-		} else {
-			fields = append(fields, structField.Name)
-		}
 	}
 	collName := s.createCollectionName(name)
 	if _, err := s.root.Stat(collName); err == nil && os.IsNotExist(err) {
@@ -83,43 +54,42 @@ func (s filesystemStore) CreateCollection(name string, v any) (Collection, error
 	}
 	// TODO 拆分文件
 	if _, err := s.root.OpenFile(collName, os.O_WRONLY|os.O_CREATE, 0644); err == nil {
-		return &filesystemCollection{collName: collName, elementType: valueType}, err
+		return &filesystemCollection{collName: collName, storeRoot: s.root}, err
 	} else {
-		return nil, err
+		return nil, errors.Join(errors.New("写入数据文件失败"), err)
 	}
 }
 
 func (s filesystemStore) DropCollection(name string) (bool, error) {
-	return false, nil
-}
-
-func (s filesystemStore) AddDocument(name string, vals ...any) bool {
 	collName := s.createCollectionName(name)
-	if fh, err := s.root.OpenFile(collName, os.O_APPEND, 0644); err == nil {
-		data, _ := json.Marshal(vals)
-		fh.Write(fmt.Appendln(data))
-		return true
-	} else {
-		return false
-	}
-}
-
-func (s filesystemStore) ListDocument(name string) (bool, [][]byte) {
-	collName := s.createCollectionName(name)
-	if fh, err := s.root.Open(collName); err == nil {
-		scanner := bufio.NewScanner(fh)
-		for scanner.Scan() {
-			data := scanner.Bytes()
-			fmt.Println(string(data))
-		}
-		return true, nil
-	} else {
-		return false, nil
-	}
+	err := s.root.Remove(collName)
+	return err == nil, errors.Join(errors.New("删除数据文件失败"), err)
 }
 
 func WithFileSuffix(suffix string) WithFilesystemStoreOption {
 	return func(store *filesystemStore) {
 		store.fileSuffix = suffix
 	}
+}
+
+func (c filesystemCollection) ForEach(handleEach func(v []byte, i uint)) bool {
+	if fh, err := c.storeRoot.Open(c.collName); err == nil {
+		scanner := bufio.NewScanner(fh)
+		var i uint
+		for scanner.Scan() {
+			handleEach(scanner.Bytes(), i)
+			i++
+		}
+		return true
+	} else {
+		return false
+	}
+}
+
+func (c filesystemCollection) Append(v []byte) bool {
+	if fh, err := c.storeRoot.OpenFile(c.collName, os.O_APPEND, 0644); err == nil {
+		_, ew := fh.Write(fmt.Appendln(v))
+		return ew == nil
+	}
+	return false
 }

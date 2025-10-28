@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"testing"
@@ -12,17 +13,21 @@ func TestInternalFilesystemStore_CreateCollection(t *testing.T) {
 	type et struct {
 		Name string `lego:"name"`
 	}
-	x := new(et)
 	if st, err = NewFilesystemStore("E:/repo"); err == nil {
 		var collName = "hello_y"
-		if coll, ex := st.CreateCollection(collName, x); ex == nil {
+		if coll, ex := st.CreateCollection(collName); ex == nil {
 			for i := 0; i < 100; i++ {
-				e := et{Name: fmt.Sprintf("hello #%05d", i)}
-				if ok := coll.AddDocument(e); ok {
-					t.Log("集合", collName, "的记录新增成功#", i)
+				d, _ := json.Marshal(et{Name: fmt.Sprintf("hello #%05d", i)})
+				if ok := coll.Append(d); ok {
+					t.Log("写入集合", collName, "的记录新增成功#", i)
 				}
 			}
 
+			coll.ForEach(func(v []byte, i uint) {
+				e := new(et)
+				json.Unmarshal(v, e)
+				t.Log("读取集合", collName, "的记录成功#", i, e)
+			})
 		} else {
 			t.Errorf("创建集合出错：%s", err)
 		}
