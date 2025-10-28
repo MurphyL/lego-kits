@@ -1,4 +1,4 @@
-package rbac
+package iam
 
 type ResourceScope string
 
@@ -6,19 +6,23 @@ const (
 	Global = "global"
 )
 
-type Role struct {
+type ScopeEntry struct {
 	Scope ResourceScope
-	Name  string
+}
+
+type Role struct {
+	ScopeEntry
+	Name string
 }
 
 type User struct {
-	Scope ResourceScope
-	Name  string
+	ScopeEntry
+	Name string
 }
 
 type Perm struct {
-	Scope ResourceScope
-	Name  string
+	ScopeEntry
+	Name string
 }
 
 type GetById[K any, R Role | User | Perm] func(K) *R

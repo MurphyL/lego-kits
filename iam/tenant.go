@@ -1,4 +1,4 @@
-package tenant
+package iam
 
 /** 租户支持 **/
 
