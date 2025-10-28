@@ -1,6 +1,6 @@
 package aigc
 
-func NewXfyunAgent(url, token string, withOptions ...func(*AgentOptions)) Agent {
+func NewXfyunAgent(url, token string, withOptions ...func(*AgentOptions)) SharedAgent {
 	options := &AgentOptions{}
 	for _, withOption := range withOptions {
 		withOption(options)

@@ -5,6 +5,8 @@ package main
 // diskv - KV数据库 - https://github.com/peterbourgon/diskv
 // s3git - Git版本库 - https://github.com/s3git/s3git-go
 
+// API 设计参考 - https://github.com/syndtr/goleveldb
+
 /**
 ## API - 设计
 

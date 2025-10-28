@@ -8,8 +8,8 @@ import (
 	"net/http"
 )
 
-// Agent 客户端 OpenAI 的通用接口 - https:www.openaicto.com/capabilities/text-generation
-type Agent interface {
+// SharedAgent 客户端 OpenAI 的通用接口 - https:www.openaicto.com/capabilities/text-generation
+type SharedAgent interface {
 	ApplyCompletion(model string, withOptions ...func(*ChatCompletion)) (*CompletionResponse, error)
 }
 
@@ -17,6 +17,7 @@ type AgentOptions struct {
 	resolveUsage func(d []byte) *CompletionUsage
 }
 
+// AI Agent 基类
 type internalAgent struct {
 	*AgentOptions
 	Url   string
