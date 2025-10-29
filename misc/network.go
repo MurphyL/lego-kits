@@ -43,6 +43,17 @@ func (c *DNSCache) Lookup(ctx context.Context, domain string) ([]string, error) 
 	return ips, nil
 }
 
+// lookupHost 查询给定域名的A记录
+func lookupHost(domain string) ([]string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	ips, err := net.DefaultResolver.LookupHost(ctx, domain)
+	if err != nil {
+		return nil, fmt.Errorf("查询 %s 失败: %v", domain, err)
+	}
+	return ips, nil
+}
+
 func main() {
 	cache := NewDNSCache(10 * time.Minute)
 	domain := "example.com"
