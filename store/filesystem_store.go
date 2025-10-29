@@ -70,6 +70,7 @@ func WithFileSuffix(suffix string) WithFilesystemStoreOption {
 
 func (c filesystemCollection) ForEach(handleEach func(v []byte, i uint)) bool {
 	if fh, err := c.storeRoot.Open(c.collName); err == nil {
+		defer fh.Close()
 		var i uint
 		for scanner := bufio.NewScanner(fh); scanner.Scan(); {
 			handleEach(scanner.Bytes(), i)
@@ -83,7 +84,9 @@ func (c filesystemCollection) ForEach(handleEach func(v []byte, i uint)) bool {
 
 func (c filesystemCollection) ForUpdate(needUpdate func(v []byte, i uint) bool) error {
 	if fh, err := c.storeRoot.Open(c.collName); err == nil {
+		defer fh.Close()
 		tmp, _ := c.storeRoot.OpenFile(c.collName+".tmp", os.O_CREATE|os.O_TRUNC, 0600)
+		defer tmp.Close()
 		var i uint
 		for scanner := bufio.NewScanner(fh); scanner.Scan(); {
 			data := scanner.Bytes()
@@ -100,6 +103,7 @@ func (c filesystemCollection) ForUpdate(needUpdate func(v []byte, i uint) bool) 
 
 func (c filesystemCollection) Append(v []byte) bool {
 	if fh, err := c.storeRoot.OpenFile(c.collName, os.O_APPEND, 0644); err == nil {
+		defer c.storeRoot.Close()
 		_, ew := fh.Write(fmt.Appendln(v))
 		return ew == nil
 	}
