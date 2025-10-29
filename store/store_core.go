@@ -5,22 +5,13 @@ type Store interface {
 	DropCollection(name string) (bool, error)
 }
 
-type ReadableCollection interface {
+type Collection interface {
 	ForEach(func(v []byte, i uint)) bool
-}
-
-type ModifiableCollection interface {
+	ForUpdate(func(v []byte, i uint) bool) error
 	Append([]byte) bool
 }
 
-type Collection interface {
-	ReadableCollection
-	ModifiableCollection
-	Iterator() *CollectionIterator
-}
-
 type CollectionIterator struct {
-	Collection ReadableCollection
-	Offset     uint
-	Limit      uint
+	Offset uint
+	Limit  uint
 }

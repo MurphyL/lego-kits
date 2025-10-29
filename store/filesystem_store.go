@@ -34,10 +34,6 @@ type filesystemCollection struct {
 	storeRoot *os.Root
 }
 
-func (c filesystemCollection) Iterator() *CollectionIterator {
-	return &CollectionIterator{}
-}
-
 type WithFilesystemStoreOption func(*filesystemStore)
 
 func (s filesystemStore) createCollectionName(name string) string {
@@ -74,9 +70,8 @@ func WithFileSuffix(suffix string) WithFilesystemStoreOption {
 
 func (c filesystemCollection) ForEach(handleEach func(v []byte, i uint)) bool {
 	if fh, err := c.storeRoot.Open(c.collName); err == nil {
-		scanner := bufio.NewScanner(fh)
 		var i uint
-		for scanner.Scan() {
+		for scanner := bufio.NewScanner(fh); scanner.Scan(); {
 			handleEach(scanner.Bytes(), i)
 			i++
 		}
@@ -84,6 +79,23 @@ func (c filesystemCollection) ForEach(handleEach func(v []byte, i uint)) bool {
 	} else {
 		return false
 	}
+}
+
+func (c filesystemCollection) ForUpdate(needUpdate func(v []byte, i uint) bool) error {
+	if fh, err := c.storeRoot.Open(c.collName); err == nil {
+		tmp, _ := c.storeRoot.OpenFile(c.collName+".tmp", os.O_CREATE|os.O_TRUNC, 0600)
+		var i uint
+		for scanner := bufio.NewScanner(fh); scanner.Scan(); {
+			data := scanner.Bytes()
+			if false == needUpdate(scanner.Bytes(), i) {
+				tmp.Write(fmt.Appendln(data))
+			}
+			i++
+		}
+	} else {
+
+	}
+	return nil
 }
 
 func (c filesystemCollection) Append(v []byte) bool {
