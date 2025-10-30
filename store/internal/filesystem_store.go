@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"bufio"
@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"store"
 )
 
-func NewFilesystemStore(path string, withOptions ...WithFilesystemStoreOption) (Store, error) {
+func NewFilesystemStore(path string, withOptions ...WithFilesystemStoreOption) (main.Store, error) {
 	if root, err := os.OpenRoot(path); err == nil {
 		st := filesystemStore{root: root}
 		if len(withOptions) > 0 {
@@ -40,7 +42,7 @@ func (s filesystemStore) createCollectionName(name string) string {
 	return strings.Join([]string{name, s.fileSuffix}, ".")
 }
 
-func (s filesystemStore) CreateCollection(name string) (Collection, error) {
+func (s filesystemStore) CreateCollection(name string) (main.Collection, error) {
 	if len(name) == 0 {
 		return nil, fmt.Errorf("集合名称不能为空")
 	}
