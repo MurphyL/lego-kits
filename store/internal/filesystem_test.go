@@ -1,14 +1,16 @@
-package main
+package internal
 
 import (
 	"encoding/json"
 	"fmt"
 	"reflect"
 	"testing"
+
+	"store"
 )
 
 func TestInternalFilesystemStore_CreateCollection(t *testing.T) {
-	var st Store
+	var st main.Store
 	var err error
 	type et struct {
 		Name string `lego:"name"`
