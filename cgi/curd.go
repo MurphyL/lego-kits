@@ -22,3 +22,11 @@ type ActionResult struct {
 	Message string
 	Payload any
 }
+
+type ActionHandler[T any] interface {
+	Create(T) (uint, error) // 增加单条记录
+	Update() (uint, error)  // 更新单条记录
+	Read() (T, error)       // 单条记录查询
+	Delete() (uint, error)  // 单条记录删除
+
+}

@@ -1,4 +1,4 @@
-package dao
+package gorm_util
 
 import (
 	"gorm.io/driver/sqlite"
