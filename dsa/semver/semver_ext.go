@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func Updage(v SemVer, step VERSION_STEP) SemVer {
+func Upgrage(v SemVer, step VERSION_STEP) SemVer {
 	ret := internalSerVer{
 		majorVersionNum: uint64(v.Major()),
 		minorVersionNum: uint64(v.Minor()),
@@ -24,10 +24,14 @@ func Updage(v SemVer, step VERSION_STEP) SemVer {
 	return &ret
 }
 
-func Patch(v SemVer) SemVer {
-	return Updage(v, PATCH_PART)
+func UpgrageMajor(v SemVer) SemVer {
+	return Upgrage(v, MAJOR_PART)
 }
 
-func BreakChange(v SemVer) SemVer {
-	return Updage(v, MAJOR_PART)
+func UpgrageMinor(v SemVer) SemVer {
+	return Upgrage(v, MAJOR_PART)
+}
+
+func UpgragePatch(v SemVer) SemVer {
+	return Upgrage(v, PATCH_PART)
 }
