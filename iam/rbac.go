@@ -3,7 +3,7 @@ package iam
 type ResourceScope string
 
 const (
-	Global = "global"
+	Global ResourceScope = "global"
 )
 
 type ScopeEntry struct {
