@@ -7,19 +7,23 @@ import (
 )
 
 // 参考文档 - https://semver.org/
-var SV_PATTERN = regexp.MustCompile("(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9a-zA-Z-]+)*")
+const SV_PATTERN = "(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9a-zA-Z-]+)*"
+
+type VERSION_STEP uint
+
+const MAJOR_PART, MINOR_PART, PATCH_PART VERSION_STEP = 0, 1, 2
 
 func Resolve(plainText string) (SemVer, bool) {
-	matche := SV_PATTERN.FindString(plainText)
+	matche := regexp.MustCompile(SV_PATTERN).FindString(plainText)
 	if len(matche) == 0 {
 		return nil, false
 	} else {
 		sv := internalSerVer{}
 		sv.versionStr, sv.additional, _ = strings.Cut(matche, "-")
 		parts := strings.SplitN(sv.versionStr, ".", 3)
-		sv.majorVersionNum, _ = strconv.ParseUint(parts[0], 10, 8)
-		sv.minorVersionNum, _ = strconv.ParseUint(parts[1], 10, 8)
-		sv.patchVersionNum, _ = strconv.ParseUint(parts[2], 10, 8)
+		sv.majorVersionNum, _ = strconv.ParseUint(parts[MAJOR_PART], 10, 8)
+		sv.minorVersionNum, _ = strconv.ParseUint(parts[MINOR_PART], 10, 8)
+		sv.patchVersionNum, _ = strconv.ParseUint(parts[PATCH_PART], 10, 8)
 		return &sv, true
 	}
 }
