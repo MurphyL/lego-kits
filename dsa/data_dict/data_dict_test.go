@@ -1,7 +1,6 @@
-package main
+package data_dict
 
 import (
-	"dsa/internal/data_dict"
 	"os"
 	"strings"
 	"testing"
@@ -28,8 +27,8 @@ func (d *testDataDictEntry) Intro() string {
 }
 
 func TestDataDict(t *testing.T) {
-	dd := data_dict.New(func(group, label string) []data_dict.Entry {
-		ret := make([]data_dict.Entry, 0)
+	dd := New(func(group, label string) []Entry {
+		ret := make([]Entry, 0)
 		envs := os.Environ()
 		for _, entry := range envs {
 			l, v, ok := strings.Cut(entry, "=")
