@@ -14,7 +14,6 @@ type PlatformApp interface {
 }
 
 type Assistant interface {
-	PlatformCode() string
 	PlatformName() string
 	PlatformSite() string
 }
