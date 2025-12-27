@@ -2,8 +2,12 @@ package open
 
 import "net/http"
 
-func NewPlatformApp(key, secret string) *PlatformApp {
+func NewPlatformApp(key, secret string) App {
 	return &PlatformApp{key, secret}
+}
+
+type App interface {
+	ApplyEndpoint(r *http.Request) (*http.Response, error)
 }
 
 type PlatformApp struct {
