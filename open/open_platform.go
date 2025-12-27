@@ -14,12 +14,12 @@ func NewPlatformError(code, phrase, desc string) PlatformError {
 	return platform.NewStatusCode(code, phrase, desc)
 }
 
-func NewGeneralResult[T any](code uint, message string, payload T) PlatformResult[T] {
-	return result.NewGeneralResult[T](code, message, payload)
+func NewResultWithCode[T any](code uint, message string, payload T) PlatformResult[T] {
+	return result.NewResultWithCode[T](code, message, payload)
 }
 
-func NewPagingResult[T any](code uint, total uint, records T[]) PlatformResult[*result.PagingPayload[T]] {
-	return result.NewGeneralResult[*result.PagingPayload[T]](code, "OK", result.NewPagingPayload(total, records))
+func NewPagingWithCode[T any](code uint, total uint, records T[]) PlatformResult[*result.PagingPayload[T]] {
+	return result.NewResultWithCode[*result.PagingPayload[T]](code, "OK", result.NewPagingPayload(total, records))
 }
 
 type PlatformApp interface {

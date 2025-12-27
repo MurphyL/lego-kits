@@ -1,11 +1,11 @@
 package result
 
-func NewGeneralResult[T any](code uint, message string, payload T) *GeneralResult[T] {
+func NewResultWithCode[T any](code uint, message string, payload T) *GeneralResult[T] {
 	return &GeneralResult[T]{code, message, payload}
 }
 
 func NewPagingPayload[T any](total uint, records T[]) *PagingPayload[T] {
-	return &PagingPayload[T]{total, records}
+	return &PagingPayload[T]{total: total, records: records}
 }
 
 type GeneralResult[T any] struct {
