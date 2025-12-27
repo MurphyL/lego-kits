@@ -6,5 +6,6 @@ use (
 	./addr
 	./aigc
 	./dsa
+	./open
 	./store
 )
