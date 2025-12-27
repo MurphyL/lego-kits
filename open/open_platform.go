@@ -2,6 +2,7 @@ package open
 
 import (
 	"github.com/MurphyL/lego-kits/open/internal/platform"
+	"github.com/MurphyL/lego-kits/open/internal/result"
 	"net/http"
 )
 
@@ -11,6 +12,14 @@ func NewPlatformApp(key, secret string) PlatformApp {
 
 func NewPlatformError(code, phrase, desc string) PlatformError {
 	return platform.NewStatusCode(code, phrase, desc)
+}
+
+func NewGeneralResult[T any](code uint, message string, payload T) PlatformResult[T] {
+	return result.NewGeneralResult[T](code, message, payload)
+}
+
+func NewPagingResult[T any](code uint, total uint, records T[]) PlatformResult[*result.PagingPayload[T]] {
+	return result.NewGeneralResult[*result.PagingPayload[T]](code, "OK", result.NewPagingPayload(total, records))
 }
 
 type PlatformApp interface {
@@ -25,7 +34,13 @@ type PlatformError interface {
 	Desc() string
 }
 
-type Assistant interface {
+type PlatformAssistant interface {
 	PlatformName() string
 	PlatformSite() string
+}
+
+type PlatformResult[T any] interface {
+	Code() uint
+	Message() string
+	Payload() T
 }
