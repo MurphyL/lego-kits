@@ -11,7 +11,7 @@ import (
 )
 
 func TestAmapPOI2(t *testing.T) {
-	var app *PlatformApp
+	var app PlatformApp
 	if tokens, ok := os.LookupEnv("AMAP_TOKENS"); ok {
 		appKey, appSecret, _ := strings.Cut(tokens, "/")
 		app = NewPlatformApp(appKey, appSecret)

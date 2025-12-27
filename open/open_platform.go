@@ -6,11 +6,13 @@ import (
 )
 
 func NewPlatformApp(key, secret string) PlatformApp {
-	return &platform.App{Key: key, Secret: secret}
+	return platform.NewApp(key, secret)
 }
 
 type PlatformApp interface {
 	ApplyEndpoint(r *http.Request) (*http.Response, error)
+	AppKey() string
+	AppSecret() string
 }
 
 type Assistant interface {
