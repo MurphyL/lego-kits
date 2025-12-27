@@ -12,3 +12,9 @@ func NewPlatformApp(key, secret string) PlatformApp {
 type PlatformApp interface {
 	ApplyEndpoint(r *http.Request) (*http.Response, error)
 }
+
+type Assistant interface {
+	PlatformCode() string
+	PlatformName() string
+	PlatformSite() string
+}
