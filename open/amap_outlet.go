@@ -1,8 +1,9 @@
-package addr
+package open
 
 import (
-	"github.com/MurphyL/lego-kits/addr/internal/amap"
 	"net/url"
+
+	"github.com/MurphyL/lego-kits/open/internal/amap"
 )
 
 func NewAmapClient(key, secret string) AmapAssistant {

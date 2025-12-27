@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestSearch(t *testing.T) {
+func TestAmapInterfaces(t *testing.T) {
 	var app *Assistant
 	if tokens, ok := os.LookupEnv("AMAP_TOKENS"); ok {
 		log.Println("高德开放平台应用参数：", tokens)

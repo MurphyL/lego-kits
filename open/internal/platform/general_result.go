@@ -1,4 +1,4 @@
-package result
+package platform
 
 func NewResultWithCode[T any](code uint, message string, payload T) *GeneralResult[T] {
 	return &GeneralResult[T]{code, message, payload}

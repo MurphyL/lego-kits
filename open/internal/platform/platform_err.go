@@ -1,22 +1,22 @@
 package platform
 
-func NewStatusCode(code, phrase, desc string) *EndpointStatusCode {
-	return &EndpointStatusCode{code, phrase, desc}
+func NewStatus(code, phrase, desc string) *EndpointStatus {
+	return &EndpointStatus{code, phrase, desc}
 }
 
-// EndpointStatusCode 接口状态码
-type EndpointStatusCode struct {
+// EndpointStatus 接口状态码
+type EndpointStatus struct {
 	code, phrase, desc string
 }
 
-func (e *EndpointStatusCode) Code() string {
+func (e *EndpointStatus) Code() string {
 	return e.code
 }
 
-func (e *EndpointStatusCode) Phrase() string {
+func (e *EndpointStatus) Phrase() string {
 	return e.phrase
 }
 
-func (e *EndpointStatusCode) Desc() string {
+func (e *EndpointStatus) Desc() string {
 	return e.desc
 }

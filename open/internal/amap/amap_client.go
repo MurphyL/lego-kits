@@ -3,21 +3,22 @@ package amap
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/MurphyL/lego-kits/open"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/MurphyL/lego-kits/open/internal/platform"
 )
 
 func NewAmapClient(key, secret string) *Assistant {
-	platformApp := open.NewPlatformApp(key, secret)
+	platformApp := platform.NewApp(key, secret)
 	endpointRoot, _ := url.Parse("https://restapi.amap.com")
 	return &Assistant{platformApp: platformApp, endpointRoot: endpointRoot}
 }
 
 type Assistant struct {
 	endpointRoot *url.URL
-	platformApp  open.PlatformApp
+	platformApp  *platform.App
 }
 
 func (a *Assistant) PlatformName() string {
@@ -32,7 +33,7 @@ func (a *Assistant) ApplyRequest(r *http.Request, key string) (any, error) {
 	var err error
 	if resp, e1 := a.platformApp.DoRequest(r); e1 == nil {
 		data, _ := io.ReadAll(resp.Body)
-		ret := ParsedAmapResult{}
+		ret := ParsedResult{}
 		if e2 := json.Unmarshal(data, &ret); e2 == nil {
 			if ret.Success() {
 				return ret.Get(key), nil
