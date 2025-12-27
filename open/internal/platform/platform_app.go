@@ -18,6 +18,6 @@ func (a *App) AppSecret() string {
 	return a.secret
 }
 
-func (a *App) ApplyEndpoint(r *http.Request) (*http.Response, error) {
+func (a *App) DoRequest(r *http.Request) (*http.Response, error) {
 	return http.DefaultClient.Do(r)
 }

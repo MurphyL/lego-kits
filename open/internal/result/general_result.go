@@ -4,7 +4,7 @@ func NewResultWithCode[T any](code uint, message string, payload T) *GeneralResu
 	return &GeneralResult[T]{code, message, payload}
 }
 
-func NewPagingPayload[T any](total uint, records T[]) *PagingPayload[T] {
+func NewPagingPayload[T any](total uint, records []T) *PagingPayload[T] {
 	return &PagingPayload[T]{total: total, records: records}
 }
 
@@ -16,7 +16,7 @@ type GeneralResult[T any] struct {
 
 type PagingPayload[T any] struct {
 	total   uint
-	records T[]
+	records []T
 }
 
 func (g GeneralResult[T]) Code() uint {

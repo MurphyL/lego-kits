@@ -18,12 +18,12 @@ func NewResultWithCode[T any](code uint, message string, payload T) PlatformResu
 	return result.NewResultWithCode[T](code, message, payload)
 }
 
-func NewPagingWithCode[T any](code uint, total uint, records T[]) PlatformResult[*result.PagingPayload[T]] {
-	return result.NewResultWithCode[*result.PagingPayload[T]](code, "OK", result.NewPagingPayload(total, records))
+func NewPagingWithCode[T any](code uint, total uint, records []T) PlatformResult[*result.PagingPayload[T]] {
+	return result.NewResultWithCode[*result.PagingPayload[T]](code, "OK", result.NewPagingPayload[T](total, records))
 }
 
 type PlatformApp interface {
-	ApplyEndpoint(r *http.Request) (*http.Response, error)
+	DoRequest(r *http.Request) (*http.Response, error)
 	AppKey() string
 	AppSecret() string
 }

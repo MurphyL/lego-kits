@@ -24,7 +24,7 @@ func TestAmapPOI2(t *testing.T) {
 	q.Add("keywords", "武汉大学")
 	u.RawQuery = q.Encode()
 	r := http.Request{URL: u}
-	resp, _ := app.ApplyEndpoint(&r)
+	resp, _ := app.DoRequest(&r)
 	if resp.StatusCode == 200 {
 		bytes, _ := io.ReadAll(resp.Body)
 		defer resp.Body.Close()
