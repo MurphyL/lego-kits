@@ -1,19 +1,14 @@
 package open
 
-import "net/http"
+import (
+	"github.com/MurphyL/lego-kits/open/internal/platform"
+	"net/http"
+)
 
-func NewPlatformApp(key, secret string) App {
-	return &PlatformApp{key, secret}
+func NewPlatformApp(key, secret string) PlatformApp {
+	return &platform.App{Key: key, Secret: secret}
 }
 
-type App interface {
+type PlatformApp interface {
 	ApplyEndpoint(r *http.Request) (*http.Response, error)
-}
-
-type PlatformApp struct {
-	Key, Secret string // 开放平台基础信息
-}
-
-func (a *PlatformApp) ApplyEndpoint(r *http.Request) (*http.Response, error) {
-	return http.DefaultClient.Do(r)
 }
