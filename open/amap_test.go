@@ -20,7 +20,7 @@ func TestAmapPOI2(t *testing.T) {
 	}
 	u, _ := url.Parse("https://restapi.amap.com/v5/place/text")
 	q := u.Query()
-	q.Add("key", app.Key)
+	q.Add("key", app.AppKey())
 	q.Add("keywords", "武汉大学")
 	u.RawQuery = q.Encode()
 	r := http.Request{URL: u}
