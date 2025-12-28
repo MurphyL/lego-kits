@@ -9,7 +9,7 @@ func GetPublicLocation() (Location, bool) {
 }
 
 type Location interface {
-	IP() string
-	Place() string
-	ISP() string
+	GetIP() string
+	GetPlace() string
+	GetISP() string
 }

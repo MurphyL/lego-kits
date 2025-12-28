@@ -13,26 +13,26 @@ var publicAddrAPIS = []string{
 	"https://icanhazip.com/",
 	"http://checkip.amazonaws.com",
 	"https://myexternalip.com/raw",
-	"https://www.trackip.net/ip",
+	"https://www.trackip.net/IP",
 	"https://ipecho.net/plain",
 }
 
 type IPLocation struct {
-	ip    string
-	place string
-	isp   string
+	IP    string
+	Place string
+	ISP   string
 }
 
-func (l *IPLocation) IP() string {
-	return l.ip
+func (l *IPLocation) GetIP() string {
+	return l.IP
 }
 
-func (l *IPLocation) Place() string {
-	return l.place
+func (l *IPLocation) GetPlace() string {
+	return l.Place
 }
 
-func (l *IPLocation) ISP() string {
-	return l.isp
+func (l *IPLocation) GetISP() string {
+	return l.ISP
 }
 
 func GetPublicLocation() (*IPLocation, bool) {
@@ -42,19 +42,19 @@ func GetPublicLocation() (*IPLocation, bool) {
 		data, _ := io.ReadAll(resp.Body)
 		parts := strings.SplitN(string(data), "  ", 3)
 		return &IPLocation{
-			ip:    strings.TrimPrefix(parts[0], "当前 IP："),
-			place: strings.TrimPrefix(parts[1], "来自于："),
-			isp:   parts[2],
+			IP:    strings.TrimPrefix(parts[0], "当前 GetIP："),
+			Place: strings.TrimPrefix(parts[1], "来自于："),
+			ISP:   parts[2],
 		}, true
 	}
 	return nil, false
 }
 
-// GetPublicIP 获取公网 IP
+// GetPublicIP 获取公网 GetIP
 func GetPublicIP() (string, bool) {
 	var err error
 	var resp *http.Response
-	// 直接返回 IP 的接口
+	// 直接返回 GetIP 的接口
 	for _, api := range publicAddrAPIS {
 		if resp, err = http.Get(api); err == nil {
 			data, _ := io.ReadAll(resp.Body)
@@ -63,7 +63,7 @@ func GetPublicIP() (string, bool) {
 	}
 	// 服用 ipip.net 的接口
 	if ret, ok := GetPublicLocation(); ok {
-		return ret.ip, true
+		return ret.IP, true
 	}
 	// 需要使用 JSON 解析数据的接口
 	if resp, err = http.Get("https://openapi.lddgo.net/base/gtool/api/v1/GetIp"); err == nil {
