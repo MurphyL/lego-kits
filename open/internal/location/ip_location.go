@@ -40,12 +40,15 @@ func GetPublicLocation() (*IPLocation, bool) {
 	var resp *http.Response
 	if resp, err = http.Get("https://myip.ipip.net/"); err == nil {
 		data, _ := io.ReadAll(resp.Body)
-		parts := strings.SplitN(string(data), "  ", 3)
-		return &IPLocation{
-			IP:    strings.TrimPrefix(parts[0], "当前 GetIP："),
-			Place: strings.TrimPrefix(parts[1], "来自于："),
-			ISP:   parts[2],
-		}, true
+		parts := strings.SplitN(strings.TrimSpace(string(data)), "  ", 3)
+		ret := IPLocation{ISP: parts[2]}
+		if _, ip, ok := strings.Cut(parts[0], "："); ok {
+			ret.IP = ip
+		}
+		if _, place, ok := strings.Cut(parts[1], "："); ok {
+			ret.Place = place
+		}
+		return &ret, true
 	}
 	return nil, false
 }
