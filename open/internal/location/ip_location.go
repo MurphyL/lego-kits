@@ -18,9 +18,21 @@ var publicAddrAPIS = []string{
 }
 
 type IPLocation struct {
-	IP    string
-	Place string
-	ISP   string
+	ip    string
+	place string
+	isp   string
+}
+
+func (l *IPLocation) IP() string {
+	return l.ip
+}
+
+func (l *IPLocation) Place() string {
+	return l.place
+}
+
+func (l *IPLocation) ISP() string {
+	return l.isp
 }
 
 func GetPublicLocation() (*IPLocation, bool) {
@@ -30,9 +42,9 @@ func GetPublicLocation() (*IPLocation, bool) {
 		data, _ := io.ReadAll(resp.Body)
 		parts := strings.SplitN(string(data), "  ", 3)
 		return &IPLocation{
-			IP:    strings.TrimPrefix(parts[0], "当前 IP："),
-			Place: strings.TrimPrefix(parts[1], "来自于："),
-			ISP:   parts[2],
+			ip:    strings.TrimPrefix(parts[0], "当前 IP："),
+			place: strings.TrimPrefix(parts[1], "来自于："),
+			isp:   parts[2],
 		}, true
 	}
 	return nil, false
@@ -51,7 +63,7 @@ func GetPublicIP() (string, bool) {
 	}
 	// 服用 ipip.net 的接口
 	if ret, ok := GetPublicLocation(); ok {
-		return ret.IP, true
+		return ret.ip, true
 	}
 	// 需要使用 JSON 解析数据的接口
 	if resp, err = http.Get("https://openapi.lddgo.net/base/gtool/api/v1/GetIp"); err == nil {
