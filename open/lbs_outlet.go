@@ -4,6 +4,6 @@ import (
 	"github.com/MurphyL/lego-kits/open/internal/location"
 )
 
-func GetPublicLocation() *location.IPLocation {
+func GetPublicLocation() (*location.IPLocation, bool) {
 	return location.GetPublicLocation()
 }
