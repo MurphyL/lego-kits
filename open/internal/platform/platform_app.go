@@ -2,12 +2,18 @@ package platform
 
 import "net/http"
 
-func NewApp(key, secret string) *App {
-	return &App{key, secret}
+func NewApp(key, secret string, withOptions ...func(*App)) *App {
+	app := &App{key: key, secret: secret}
+	for _, withOption := range withOptions {
+		withOption(app)
+	}
+	return app
 }
 
 type App struct {
-	key, secret string // 开放平台基础信息
+	key, secret    string // 开放平台基础信息
+	HttpClient     *http.Client
+	RequestBuilder func(*http.Request)
 }
 
 func (a *App) AppKey() string {
@@ -19,5 +25,12 @@ func (a *App) AppSecret() string {
 }
 
 func (a *App) DoRequest(r *http.Request) (*http.Response, error) {
-	return http.DefaultClient.Do(r)
+	if a.RequestBuilder != nil {
+		a.RequestBuilder(r)
+	}
+	if nil == a.HttpClient {
+		return http.DefaultClient.Do(r)
+	} else {
+		return a.HttpClient.Do(r)
+	}
 }

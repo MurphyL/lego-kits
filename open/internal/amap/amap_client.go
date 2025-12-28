@@ -10,15 +10,15 @@ import (
 	"github.com/MurphyL/lego-kits/open/internal/platform"
 )
 
-func NewAmapClient(key, secret string) *Assistant {
-	platformApp := platform.NewApp(key, secret)
-	endpointRoot, _ := url.Parse("https://restapi.amap.com")
-	return &Assistant{platformApp: platformApp, endpointRoot: endpointRoot}
+func NewAmapClient(key, secret string, withOptions ...func(*platform.App)) *Assistant {
+	platformApp := platform.NewApp(key, secret, withOptions...)
+	endpointURL, _ := url.Parse("https://restapi.amap.com")
+	return &Assistant{platformApp: platformApp, endpointURL: endpointURL}
 }
 
 type Assistant struct {
-	endpointRoot *url.URL
-	platformApp  *platform.App
+	endpointURL *url.URL
+	platformApp *platform.App
 }
 
 func (a *Assistant) PlatformName() string {

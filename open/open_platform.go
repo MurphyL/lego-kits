@@ -6,8 +6,8 @@ import (
 	"github.com/MurphyL/lego-kits/open/internal/platform"
 )
 
-func NewPlatformApp(key, secret string) PlatformApp {
-	return platform.NewApp(key, secret)
+func NewPlatformApp(key, secret string, withOptions ...func(*platform.App)) PlatformApp {
+	return platform.NewApp(key, secret, withOptions...)
 }
 
 func NewPlatformError(code, phrase, desc string) PlatformError {
@@ -20,6 +20,18 @@ func NewResultWithCode[T any](code uint, message string, payload T) PlatformResu
 
 func NewPagingWithCode[T any](code uint, total uint, records []T) PlatformResult[*platform.PagingPayload[T]] {
 	return platform.NewResultWithCode[*platform.PagingPayload[T]](code, "OK", platform.NewPagingPayload[T](total, records))
+}
+
+func WithHttpClient(httpClient *http.Client) func(*platform.App) {
+	return func(app *platform.App) {
+		app.HttpClient = httpClient
+	}
+}
+
+func WithHttpRequestBuilder(builder func(*http.Request)) func(*platform.App) {
+	return func(app *platform.App) {
+		app.RequestBuilder = builder
+	}
 }
 
 type PlatformApp interface {
