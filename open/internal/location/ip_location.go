@@ -3,7 +3,6 @@ package location
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -30,9 +29,6 @@ func GetPublicLocation() (*IPLocation, bool) {
 	if resp, err = http.Get("https://myip.ipip.net/"); err == nil {
 		data, _ := io.ReadAll(resp.Body)
 		parts := strings.SplitN(string(data), "  ", 3)
-		log.Println("IP：", strings.TrimPrefix(parts[0], "当前 IP："))
-		log.Println("位置：", strings.TrimPrefix(parts[1], "来自于："))
-		log.Println("服务商：", parts[2])
 		return &IPLocation{
 			IP:    strings.TrimPrefix(parts[0], "当前 IP："),
 			Place: strings.TrimPrefix(parts[1], "来自于："),
