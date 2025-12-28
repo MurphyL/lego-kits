@@ -1,4 +1,4 @@
-package platform
+package third_party
 
 func NewStatus(code, phrase, desc string) *EndpointStatus {
 	return &EndpointStatus{code, phrase, desc}

@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/MurphyL/lego-kits/open/internal/platform"
+	"github.com/MurphyL/lego-kits/open/internal/third_party"
 )
 
-func NewChatGroupPushService(key string, withOptions ...func(*platform.App)) *ChatGroupPushService {
+func NewChatGroupPushService(key string, withOptions ...func(*third_party.App)) *ChatGroupPushService {
 	webhookURL := "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=" + key
-	platformApp := platform.NewApp(key, "", withOptions...)
+	platformApp := third_party.NewApp(key, "", withOptions...)
 	platformApp.RequestBuilder = func(request *http.Request) {
 		request.Header.Set("Content-Type", "application/json")
 	}
@@ -22,7 +22,7 @@ func NewChatGroupPushService(key string, withOptions ...func(*platform.App)) *Ch
 
 type ChatGroupPushService struct {
 	webhookURL  string
-	platformApp *platform.App
+	platformApp *third_party.App
 }
 
 func (c *ChatGroupPushService) PlatformName() string {

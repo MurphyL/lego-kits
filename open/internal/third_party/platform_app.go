@@ -1,4 +1,4 @@
-package platform
+package third_party
 
 import "net/http"
 
