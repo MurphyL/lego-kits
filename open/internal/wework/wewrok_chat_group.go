@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"net/http/httptest"
 
 	"github.com/MurphyL/lego-kits/open/internal/third_party"
 )
@@ -35,7 +34,7 @@ func (c *ChatGroupPushService) PlatformSite() string {
 
 func (c *ChatGroupPushService) send(body any) {
 	payload, _ := json.Marshal(body)
-	r := httptest.NewRequest(http.MethodPost, c.webhookURL, bytes.NewReader(payload))
+	r, _ := http.NewRequest(http.MethodPost, c.webhookURL, bytes.NewReader(payload))
 	if resp, err := c.platformApp.DoRequest(r); err == nil {
 		data, _ := io.ReadAll(resp.Body)
 		log.Println(string(data))

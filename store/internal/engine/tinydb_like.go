@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"log"
 	"os"
 
 	"github.com/MurphyL/lego-kits/store/internal/conds"
@@ -9,7 +10,11 @@ import (
 // 参考 TinyDB 实现的一个 JSON 文档数据库 - https://tinydb.readthedocs.io/en/latest/index.html
 
 func NewTinyDB(filepath string) (*TinyDB, error) {
-	return &TinyDB{}, nil
+	if fh, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0666); err == nil {
+		return &TinyDB{fh: fh}, nil
+	} else {
+		return nil, err
+	}
 }
 
 type Collection interface {
@@ -27,7 +32,15 @@ type TinyCollection struct {
 }
 
 func (s *TinyDB) Truncate() bool {
-	return false
+	if err := s.fh.Truncate(0); err != nil {
+		log.Panicln("清空数据文件出错：", err)
+		return false
+	}
+	if _, err := s.fh.WriteString("{}"); err != nil {
+		log.Panicln("初始化数据文件出错：", err)
+		return false
+	}
+	return true
 }
 
 func (s *TinyDB) Collection(name string) Collection {
