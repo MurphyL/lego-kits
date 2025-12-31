@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/MurphyL/lego-kits/store/internal/conds"
 	"github.com/MurphyL/lego-kits/store/internal/engine"
 )
 
@@ -14,10 +13,6 @@ func NewStore(filepath string, withOpts ...Option) (Store, error) {
 	} else {
 		return nil, err
 	}
-}
-
-func NewQuery() *conds.QueryBuilder {
-	return &conds.QueryBuilder{}
 }
 
 type Store interface {
