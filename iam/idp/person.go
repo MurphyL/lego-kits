@@ -1,4 +1,4 @@
-package iam
+package idp
 
 type Person struct {
 	Id     int64

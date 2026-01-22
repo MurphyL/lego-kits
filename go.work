@@ -5,8 +5,9 @@ toolchain go1.24.11
 use (
 	./aigc
 	./dsa
+	./iam
 	./open
+	./repo
 	./store
 	./wails
-	repo
 )
