@@ -7,4 +7,5 @@ use (
 	./dsa
 	./open
 	./store
+	./wails
 )
