@@ -18,7 +18,11 @@ type WailsApp struct {
 
 func (wa *WailsApp) Login(acc account.Account) (bool, error) {
 	if nil == acc || strings.TrimSpace(acc.Username()) == "" || strings.TrimSpace(acc.Password()) == "" {
-		return false, errors.New("账户信息不能为空")
+		return false, errors.New("登录信息缺失")
 	}
+	return account.Login(acc)
+}
+
+func (wa *WailsApp) Logout(acc account.Account) (bool, error) {
 	return account.Login(acc)
 }
