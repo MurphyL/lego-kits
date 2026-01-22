@@ -61,6 +61,8 @@ func (d *TinyDB) load() (map[string][]any, error) {
 
 func (d *TinyDB) dump(dict map[string][]any) error {
 	if data, err := json.Marshal(dict); err == nil {
+		d.fh.Truncate(0)
+		d.fh.Seek(0, io.SeekStart)
 		_, err = d.fh.Write(data)
 		return err
 	} else {
