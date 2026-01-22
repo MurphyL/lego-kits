@@ -7,5 +7,6 @@ use (
 	./dsa
 	./open
 	./store
+	./wails
 	repo
 )
