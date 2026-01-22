@@ -5,8 +5,6 @@ import (
 )
 
 type Account interface {
-	Username() string
-	Password() string
 	ValidateLogin() bool
 }
 

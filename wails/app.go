@@ -2,7 +2,6 @@ package wails
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/MurphyL/lego-kits/wails/internal/account"
 )
@@ -17,7 +16,7 @@ type WailsApp struct {
 }
 
 func (wa *WailsApp) Login(acc account.Account) (bool, error) {
-	if nil == acc || strings.TrimSpace(acc.Username()) == "" || strings.TrimSpace(acc.Password()) == "" {
+	if nil == acc {
 		return false, errors.New("登录信息缺失")
 	}
 	return account.Login(acc)

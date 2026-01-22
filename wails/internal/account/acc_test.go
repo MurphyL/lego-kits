@@ -19,7 +19,7 @@ func (acc *testAcc) Password() string {
 }
 
 func (acc *testAcc) ValidateLogin() bool {
-	return false
+	return acc.username == "luohao" && acc.username == "123456"
 }
 
 func TestLogin(t *testing.T) {
