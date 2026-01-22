@@ -18,8 +18,12 @@ func (acc *testAcc) Password() string {
 	return acc.password
 }
 
-func (acc *testAcc) ValidateLogin() bool {
-	return acc.username == "luohao" && acc.username == "123456"
+func (acc *testAcc) ValidateLogin(ep string) bool {
+	return acc.username == "luohao" && acc.password == ep
+}
+
+func (acc *testAcc) EncryptPassword() (string, error) {
+	return acc.password, nil
 }
 
 func TestLogin(t *testing.T) {
@@ -29,5 +33,4 @@ func TestLogin(t *testing.T) {
 	} else {
 		log.Println("登录出错：", err.Error())
 	}
-
 }
