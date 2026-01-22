@@ -1,15 +1,13 @@
-package dao
+package repo
 
 import (
-	"repo/internal/repo_util"
+	"github.com/jmoiron/sqlx"
+
+	"github.com/MurphyL/lego-kits/repo/internal/repo_util"
 )
 
 type ID interface{ uint64 | string }
 
-type Repo interface {
-	Get(dest interface{}, query string, args ...interface{}) error
-}
-
-func NewRepo(driverName, dataSourceName string) Repo {
-	return repo_util.NewInternalRepo(driverName, dataSourceName)
+func NewRepo(driverName, dataSourceName string) repo_util.SqlxRepo {
+	return repo_util.SqlxRepo{DB: sqlx.MustOpen(driverName, dataSourceName)}
 }
