@@ -30,14 +30,14 @@ type Identity interface {
 }
 
 // Login 登录
-func Login(acc Identity, method LoginMethod) (string, error) {
+func Login(acc Identity, method LoginMethod) (bool, error) {
 	if ep, err := acc.EncryptPassword(); err != nil {
-		return "", fmt.Errorf("密钥生成出错：%v", err.Error())
+		return false, fmt.Errorf("密钥生成出错：%v", err.Error())
 	} else {
 		if acc.ValidateLogin(ep, method) {
-			return "1", nil
+			return true, nil
 		}
-		return "", errors.New("账号密码验证不通过")
+		return false, errors.New("账号密码验证不通过")
 	}
 }
 

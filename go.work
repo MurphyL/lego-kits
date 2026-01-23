@@ -9,5 +9,4 @@ use (
 	./open
 	./repo
 	./store
-	./wails
 )
