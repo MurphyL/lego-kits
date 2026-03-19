@@ -1,6 +1,6 @@
 package amap
 
-import "github.com/MurphyL/lego-kits/open/internal/third_party"
+import "github.com/MurphyL/lego-kits/oapi/internal/third_party"
 
 type ParsedResult map[string]any
 

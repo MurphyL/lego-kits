@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/MurphyL/lego-kits/open/internal/third_party"
+	"github.com/MurphyL/lego-kits/oapi/internal/third_party"
 )
 
 func NewChatGroupPushService(key string, withOptions ...func(*third_party.App)) *ChatGroupPushService {

@@ -1,7 +1,7 @@
 package open
 
 import (
-	"github.com/MurphyL/lego-kits/open/internal/third_party"
+	"github.com/MurphyL/lego-kits/oapi/internal/third_party"
 )
 
 /* 开放平台 - Self Holding */

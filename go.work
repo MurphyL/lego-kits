@@ -6,7 +6,5 @@ use (
 	./aigc
 	./dsa
 	./iam
-	./open
-	./repo
-	./store
+	./oapi
 )

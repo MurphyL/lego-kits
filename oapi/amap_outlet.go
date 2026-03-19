@@ -3,7 +3,7 @@ package open
 import (
 	"net/url"
 
-	"github.com/MurphyL/lego-kits/open/internal/amap"
+	"github.com/MurphyL/lego-kits/oapi/internal/amap"
 )
 
 func NewAmapClient(key, secret string) AmapAssistant {
