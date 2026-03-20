@@ -1,4 +1,4 @@
-package etl
+package graph
 
 import "errors"
 
