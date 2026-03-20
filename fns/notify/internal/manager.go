@@ -8,6 +8,7 @@ type NotificationMessage interface {
 type NotificationManager struct {
 }
 
-func (n *NotificationManager) Send(msg NotificationMessage, channels ...NotificationChannelType) {
+func (n *NotificationManager) Send(msg NotificationMessage) error {
 	// 实现发送通知的逻辑
+	return nil
 }

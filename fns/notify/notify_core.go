@@ -9,5 +9,5 @@ func NewNotificationManager() NotificationManager {
 
 /* 通知管理器（Notification Manager） */
 type NotificationManager interface {
-	Send(internal.NotificationMessage, ...internal.NotificationChannelType)
+	Send(internal.NotificationMessage) error
 }
