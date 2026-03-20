@@ -1,4 +1,4 @@
-module murphyl.com/lego/aigc
+module murphyl.com/lego/agi
 
 go 1.24.4
 
