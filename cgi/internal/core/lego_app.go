@@ -1,4 +1,4 @@
-package app
+package core
 
 import (
 	"context"
@@ -13,9 +13,6 @@ import (
 	"murphyl.com/lego/cgi/internal/sugar"
 )
 
-// cgi 模块是CGI相关模块，提供了LegoApp结构体，用于创建和管理Fiber应用程序
-// 主要功能包括：创建应用、挂载路由、启动服务等
-
 var sugarLogger = sugar.NewSugarLogger()
 
 func NewLegoApp(appConfig AppConfig) *LegoApp {
@@ -25,9 +22,9 @@ func NewLegoApp(appConfig AppConfig) *LegoApp {
 		AppName:       appConfig.AppTitle(),
 	}
 	// 应用服务
-	l := &LegoApp{app: fiber.New(ac)}
+	l := &LegoApp{App: fiber.New(ac)}
 	// 注册关闭前钩子
-	l.app.Hooks().OnPreShutdown(func() error {
+	l.App.Hooks().OnPreShutdown(func() error {
 		sugarLogger.Infoln("Server is shutting down...")
 		return nil
 	})
@@ -35,7 +32,7 @@ func NewLegoApp(appConfig AppConfig) *LegoApp {
 }
 
 type LegoApp struct {
-	app *fiber.App
+	*fiber.App
 }
 
 // AppConfig 是应用配置接口
@@ -49,13 +46,13 @@ type AppHandler interface {
 }
 
 func (l *LegoApp) Mount(url string, useRouterGroup func(router fiber.Router)) {
-	useRouterGroup(l.app.Group(path.Join("/api", url)))
+	useRouterGroup(l.App.Group(path.Join("/api", url)))
 }
 
 func (l *LegoApp) Serve(addr string) {
 	// 启动服务器协程
 	go func() {
-		if err := l.app.Listen(addr); err != nil {
+		if err := l.App.Listen(addr); err != nil {
 			sugarLogger.Info("Server Shutdown:", err.Error())
 		}
 	}()
@@ -68,7 +65,7 @@ func (l *LegoApp) Serve(addr string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	// 优雅关闭
-	if err := l.app.ShutdownWithContext(ctx); err != nil {
+	if err := l.App.ShutdownWithContext(ctx); err != nil {
 		sugarLogger.Info("Server failed:", err)
 	}
 	sugarLogger.Info("Server exited")
