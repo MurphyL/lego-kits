@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/MurphyL/lego-kits/oapi/internal/third_party"
+	"murphyl.com/lego/oapi/internal/third_party"
 )
 
 func NewAmapClient(key, secret string, withOptions ...func(*third_party.App)) *Assistant {

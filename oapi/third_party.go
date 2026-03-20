@@ -3,7 +3,7 @@ package open
 import (
 	"net/http"
 
-	"github.com/MurphyL/lego-kits/oapi/internal/third_party"
+	"murphyl.com/lego/oapi/internal/third_party"
 )
 
 /* 开放平台 - 三方服务的接口封装 */

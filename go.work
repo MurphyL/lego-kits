@@ -3,7 +3,7 @@ go 1.25.0
 use (
 	./aigc
 	./cgi
-	./dsa
+	./fns
 	./iam
 	./oapi
 )

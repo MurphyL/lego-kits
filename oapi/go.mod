@@ -1,3 +1,3 @@
-module github.com/MurphyL/lego-kits/oapi
+module murphyl.com/lego/oapi
 
 go 1.24

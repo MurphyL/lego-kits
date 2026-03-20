@@ -1,7 +1,7 @@
 package open
 
 import (
-	"github.com/MurphyL/lego-kits/oapi/internal/wework"
+	"murphyl.com/lego/oapi/internal/wework"
 )
 
 func NewWeworkChatGroupPushService(key string) {

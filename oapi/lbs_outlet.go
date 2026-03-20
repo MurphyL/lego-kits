@@ -1,7 +1,7 @@
 package open
 
 import (
-	"github.com/MurphyL/lego-kits/oapi/internal/location"
+	"murphyl.com/lego/oapi/internal/location"
 )
 
 func GetPublicLocation() (Location, bool) {
