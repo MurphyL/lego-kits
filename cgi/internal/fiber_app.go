@@ -1,4 +1,4 @@
-package core
+package internal
 
 import (
 	"context"
@@ -9,11 +9,9 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v3"
-
-	"murphyl.com/lego/cgi/internal/sugar"
 )
 
-var sugarLogger = sugar.NewSugarLogger()
+var sugarLogger = NewSugarLogger()
 
 func NewLegoApp(appConfig AppConfig) *LegoApp {
 	ac := fiber.Config{

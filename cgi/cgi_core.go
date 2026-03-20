@@ -4,15 +4,14 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
 
-	"murphyl.com/lego/cgi/internal/core"
-	"murphyl.com/lego/cgi/internal/sugar"
+	"murphyl.com/lego/cgi/internal"
 )
 
 /*
  * cgi 模块用于创建和管理基于 gofiber/v3 的服务
  * 主要功能包括：创建应用、挂载路由、启动服务等
  */
-var sugarLogger = sugar.NewSugarLogger()
+var sugarLogger = internal.NewSugarLogger()
 
 /*
 *
@@ -20,8 +19,8 @@ var sugarLogger = sugar.NewSugarLogger()
   - @param appConfig app.AppConfig 应用配置
   - @return LegoAppInterface 应用接口
 */
-func NewLegoApp(appConfig core.AppConfig) LegoApp {
-	return core.NewLegoApp(appConfig)
+func NewLegoApp(appConfig internal.AppConfig) LegoApp {
+	return internal.NewLegoApp(appConfig)
 }
 
 type LegoApp interface {

@@ -1,4 +1,4 @@
-package sugar
+package internal
 
 import (
 	"github.com/natefinch/lumberjack"
