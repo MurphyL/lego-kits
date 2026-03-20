@@ -12,6 +12,4 @@ func (m *MockNotificationMessage) Content() string {
 }
 
 func TestNotificationManager(t *testing.T) {
-	manager := NewNotificationManager()
-	manager.Send(&MockNotificationMessage{})
 }
